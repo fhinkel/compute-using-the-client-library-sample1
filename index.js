@@ -3,6 +3,7 @@
 // [START compute_engine_quickstart]
 // Imports the Google Cloud client library
 const Compute = require('@google-cloud/compute');
+const http = require('http');
 
 // Creates a client
 const compute = new Compute();
@@ -32,11 +33,28 @@ zone
     const vm = data[0];
     const operation = data[1];
     const apiResponse = data[2];
-    return operation.promise();
+
+    operation.on('complete', metadata => {
+      vm.getMetadata().then(data => {
+        const metadata = data[0];
+        const ip = metadata['networkInterfaces'][0]['accessConfigs'][0]['natIP'];
+        console.log(name + ' created, running at ' + ip);
+        console.log('Waiting for startup...')
+
+        const runPings = setInterval( (ip) => {
+          http.get(ip, res => {
+            const {statusCode} = res
+            if (statusCode === 200) {
+              clearTimeout(runPings);
+              console.log("Ready!");
+            }
+       
+          }).on('error', () => process.stdout.write("."))
+        }, 500, 'http://' + ip) 
+      })
+      .catch(err => console.log(err))
+    })
   })
-  .then(() => {
-    // Virtual machine created!
-  })
-  .catch(err => {
-    console.error('ERROR:', err);
-  });
+  .catch(err => console.error('ERROR:', err))
+
+ 
