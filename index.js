@@ -7,6 +7,8 @@ const compute = new Compute();
 
 // Create a new VM using the latest OS ubuntu image.
 const zone = compute.zone('us-central1-a');
+
+// Names must be unique within the same zone.
 const name = 'ubuntu-http' + Math.floor(Math.random() * 100);
 
 const config = {
@@ -15,8 +17,16 @@ const config = {
   metadata: {
     items: [
       {
-        key: "startup-script",
-        value: "#! /bin/bash\n\n# Installs apache and a custom homepage\napt-get update\napt-get install -y apache2\ncat <<EOF > /var/www/html/index.html\n<html><body><h1>Hello World</h1>\n<p>This page was created from a simple start up script!</p>\n</body></html>"
+        key: 'startup-script',
+        value: `#! /bin/bash
+
+        # Installs apache and a custom homepage
+        apt-get update
+        apt-get install -y apache2
+        cat <<EOF > /var/www/html/index.html
+        <html><body><h1>Hello World</h1>
+          <p>This page was created from a simple start up script!</p>
+        </body></html>`
       }
     ]
   }
@@ -42,10 +52,10 @@ zone
             const { statusCode } = res
             if (statusCode === 200) {
               clearTimeout(timer);
-              console.log("Ready!");
+              console.log('Ready!');
             }
 
-          }).on('error', () => process.stdout.write("."))
+          }).on('error', () => process.stdout.write('.'))
         }, 2000, 'http://' + ip)
       })
         .catch(err => console.error(err))
@@ -60,7 +70,7 @@ zone.getVMs()
     vms.forEach(vm => {
       vm.getMetadata().then(data => {
         const ip = data[0]['networkInterfaces'][0]['accessConfigs'][0]['natIP'];
-        console.log(vm.name + ": " + ip)
+        console.log(vm.name + ': ' + ip)
       }).catch(err => console.error(err))
     })
   })
