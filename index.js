@@ -25,14 +25,12 @@ const config = {
   }
 }
 
-
+// Create a new VM, using default ubuntu image. The startup script installs apache. 
 zone
   .createVM(name, config)
   .then(data => {
-    // `operation` lets you check the status of long-running tasks.
     const vm = data[0];
     const operation = data[1];
-    const apiResponse = data[2];
 
     operation.on('complete', metadata => {
       vm.getMetadata().then(data => {
@@ -52,9 +50,17 @@ zone
           }).on('error', () => process.stdout.write("."))
         }, 500, 'http://' + ip) 
       })
-      .catch(err => console.log(err))
+      .catch(err => console.error(err))
     })
   })
-  .catch(err => console.error('ERROR:', err))
+  .catch(err => console.error( err))
 
- 
+ // List all VMs in that zone. 
+ zone.getVMs()
+ .then(data => {
+   const vms = data[0];
+   vms.forEach(vm => {
+     vm.getMetadata().then(data => console.log(vm.name + ": " + data[0]['networkInterfaces'][0]['accessConfigs'][0]['natIP']))
+    })
+ })
+ .catch(err => console.error(err))
