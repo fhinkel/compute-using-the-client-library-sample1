@@ -1,13 +1,11 @@
 'use strict';
 
-// Imports the Google Cloud client library
 const Compute = require('@google-cloud/compute');
 const http = require('http');
 
-// Creates a client
 const compute = new Compute();
 
-// Create a new VM using the latest OS image of your choice.
+// Create a new VM using the latest OS ubuntu image.
 const zone = compute.zone('us-central1-a');
 const name = 'ubuntu-http' + Math.floor(Math.random() * 100);
 
@@ -24,7 +22,8 @@ const config = {
   }
 }
 
-// Create a new VM, using default ubuntu image. The startup script installs apache. 
+// Create a new VM, using default ubuntu image. The startup script
+// installs apache and a custom homepage.
 zone
   .createVM(name, config)
   .then(data => {
@@ -38,16 +37,16 @@ zone
         console.log(name + ' created, running at ' + ip);
         console.log('Waiting for startup...')
 
-        const runPings = setInterval((ip) => {
+        const timer = setInterval(ip => {
           http.get(ip, res => {
             const { statusCode } = res
             if (statusCode === 200) {
-              clearTimeout(runPings);
+              clearTimeout(timer);
               console.log("Ready!");
             }
 
           }).on('error', () => process.stdout.write("."))
-        }, 500, 'http://' + ip)
+        }, 2000, 'http://' + ip)
       })
         .catch(err => console.error(err))
     })
@@ -59,7 +58,10 @@ zone.getVMs()
   .then(data => {
     const vms = data[0];
     vms.forEach(vm => {
-      vm.getMetadata().then(data => console.log(vm.name + ": " + data[0]['networkInterfaces'][0]['accessConfigs'][0]['natIP']))
+      vm.getMetadata().then(data => {
+        const ip = data[0]['networkInterfaces'][0]['accessConfigs'][0]['natIP'];
+        console.log(vm.name + ": " + ip)
+      }).catch(err => console.error(err))
     })
   })
   .catch(err => console.error(err))
