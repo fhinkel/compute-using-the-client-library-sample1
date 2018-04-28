@@ -17,8 +17,10 @@ library's README. Your environment variable
 
 ### Run the sample
 
-```npm install```
-```npm start```
+```git clone git@github.com:googleapis/nodejs-compute.git
+cd nodejs-compute/samples/create-with-startup-script
+npm install
+npm start```
 
 On success, you should see output like this:
 
@@ -27,9 +29,7 @@ On success, you should see output like this:
 > compute-using-the-client-library@1.0.0 start /Users/franzih/code/gcp/compute-using-the-client-library-sample1
 > node index.js
 
-
 ubuntu-http91: 35.192.234.198
-ubuntu-http9: 35.184.183.127
 ubuntu-http7: 35.184.205.70
 ubuntu-http77 created, running at 35.184.157.25
 Waiting for startup...
@@ -45,7 +45,8 @@ make any changes you want or have a look at the log files.
 
 `gcloud compute --project "YOUR PROJECT" ssh --zone "us-central1-a" "ubuntu-http-NUMBER"`
 
-If the start up script doesn’t work (it takes about two minutes to install apache), ssh into
+If the start up script doesn’t work (it takes about two
+minutes to install Apache), ssh into
 the VM and check the log files in `/var/log/syslog`. Keep in
 mind that the startup script is run as root with a different
 home directory than your default user.

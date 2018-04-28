@@ -73,6 +73,5 @@ zone.getVMs()
         console.log(vm.name + ': ' + ip)
       }).catch(err => console.error(err))
     })
-    console.log();
   })
   .catch(err => console.error(err))
