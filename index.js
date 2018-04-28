@@ -9,7 +9,7 @@ const compute = new Compute();
 const zone = compute.zone('us-central1-a');
 
 // Names must be unique within the same zone.
-const name = 'ubuntu-http' + Math.floor(Math.random() * 100);
+const name = 'ubuntu-http-' + Math.floor(Math.random() * 100);
 
 const config = {
   os: 'ubuntu',
@@ -73,5 +73,6 @@ zone.getVMs()
         console.log(vm.name + ': ' + ip)
       }).catch(err => console.error(err))
     })
+    console.log();
   })
   .catch(err => console.error(err))
