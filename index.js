@@ -69,6 +69,7 @@ zone.getVMs()
     const vms = data[0];
     vms.forEach(vm => {
       vm.getMetadata().then(data => {
+        // todo(): Check if IP is present before accessing it.
         const ip = data[0]['networkInterfaces'][0]['accessConfigs'][0]['natIP'];
         console.log(vm.name + ': ' + ip)
       }).catch(err => console.error(err))
