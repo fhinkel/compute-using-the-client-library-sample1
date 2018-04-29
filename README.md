@@ -38,7 +38,7 @@ Waiting for startup...
 You can test the new VM in your browser by navigating to its IP address.
 
 
-![Screenshot of homepage](https://github.com/fhinkel/compute-using-the-client-library-sample1/raw/master/apache.png)
+![Screenshot of homepage](../../raw/master/apache.png)
 
 
 ### Troubleshooting
